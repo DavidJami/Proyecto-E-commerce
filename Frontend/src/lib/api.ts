@@ -59,6 +59,7 @@ export const customerAPI = {
   getById: (id: string) => api(`/customers/${id}`),
   update: (id: string, data: any) => api(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id: string) => api(`/customers/${id}`, { method: 'DELETE' }),
+  updateRole: (email: string, role: string) => api('/customers/update-role', { method: 'PUT', body: JSON.stringify({ email, role }) }),
 };
 
 export const productAPI = {
