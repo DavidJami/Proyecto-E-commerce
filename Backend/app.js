@@ -11,10 +11,23 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Deshabilitar header X-Powered-By para no revelar versión de Express
+app.disable('x-powered-by');
+
+// CORS configurado con dominios específicos
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173'];
+
 const corsOptions = {
-  origin: '*', 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy: origin not allowed'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 connectDB();
