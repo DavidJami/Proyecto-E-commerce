@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1779170759316" clover="3.2.0">
-  <project timestamp="1779170759316" name="All files">
-    <metrics statements="280" coveredstatements="280" conditionals="42" coveredconditionals="42" methods="53" coveredmethods="53" elements="375" coveredelements="375" complexity="0" loc="280" ncloc="280" packages="4" files="16" classes="16"/>
+<coverage generated="1779208720207" clover="3.2.0">
+  <project timestamp="1779208720207" name="All files">
+    <metrics statements="301" coveredstatements="301" conditionals="58" coveredconditionals="58" methods="55" coveredmethods="55" elements="414" coveredelements="414" complexity="0" loc="301" ncloc="301" packages="5" files="18" classes="18"/>
     <package name="controllers">
       <metrics statements="129" coveredstatements="129" conditionals="14" coveredconditionals="14" methods="26" coveredmethods="26"/>
       <file name="categoryController.js" path="C:\Users\LENOVO\Documents\Archivo\Proyecto-E-commerce\Backend\controllers\categoryController.js">
@@ -144,6 +144,36 @@
         <line num="38" count="2" type="stmt"/>
         <line num="39" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="40" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="middlewares">
+      <metrics statements="21" coveredstatements="21" conditionals="16" coveredconditionals="16" methods="2" coveredmethods="2"/>
+      <file name="basicAuth.js" path="C:\Users\LENOVO\Documents\Archivo\Proyecto-E-commerce\Backend\middlewares\basicAuth.js">
+        <metrics statements="16" coveredstatements="16" conditionals="6" coveredconditionals="6" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="6" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+      </file>
+      <file name="errorHandler.js" path="C:\Users\LENOVO\Documents\Archivo\Proyecto-E-commerce\Backend\middlewares\errorHandler.js">
+        <metrics statements="5" coveredstatements="5" conditionals="10" coveredconditionals="10" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="4" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="6" count="5" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
       </file>
     </package>
     <package name="models">

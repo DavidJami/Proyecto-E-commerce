@@ -15,6 +15,12 @@ function createRes() {
 describe("customerController", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mockear console.error para evitar que salgan en los tests
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   // Este test verifica que falle al buscar un customer inexistente.
