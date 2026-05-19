@@ -17,6 +17,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test GET /productsAvailable
+  // Este test verifica que se devuelvan los productos disponibles.
   test("GET /api/products/productsAvailable debe retornar productos disponibles", async () => {
     const mockProducts = [
       { _id: "1", name: "Producto 1", stock: 5, available: true },
@@ -33,6 +34,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test GET /productsDiscounted
+  // Este test verifica que se devuelvan los productos con descuento.
   test("GET /api/products/productsDiscounted debe retornar productos con descuento", async () => {
     const mockDiscountedProducts = [
       { idProduct: "1", name: "Producto Personalizado", originalPrice: 100, discountedPrice: 90 },
@@ -47,6 +49,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test POST /:idProduct/purchase
+  // Este test verifica que una compra de producto funcione bien.
   test("POST /api/products/products/1/purchase debe realizar una compra exitosa", async () => {
     const mockProduct = { _id: "1", name: "Producto 1", stock: 10 };
     productService.purchaseProduct.mockResolvedValue({ ...mockProduct, stock: 8 });
@@ -60,6 +63,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test GET /
+  // Este test verifica que se devuelvan todos los productos.
   test("GET /api/products/ debe retornar todos los productos", async () => {
     const mockProducts = [
       { _id: "1", name: "Producto 1" },
@@ -75,6 +79,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test GET /:id
+  // Este test verifica que se encuentre un producto por id.
   test("GET /api/products/1 debe retornar un producto existente", async () => {
     const mockProduct = { _id: "1", name: "Producto 1" };
     productService.getProductById.mockResolvedValue(mockProduct);
@@ -86,6 +91,7 @@ describe("Rutas de /barroco/products", () => {
     expect(productService.getProductById).toHaveBeenCalledWith("1");
   });
 
+  // Este test verifica que falle si el producto no existe.
   test("GET /api/products/999 debe retornar 404 si el producto no existe", async () => {
     productService.getProductById.mockImplementation(() => {
       throw new Error("Producto no encontrado");
@@ -98,6 +104,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test POST /
+  // Este test verifica que se cree un producto nuevo.
   test("POST /api/products/ debe crear un producto", async () => {
     const newProduct = { name: "Nuevo Producto", price: 100, stock: 10 };
     const createdProduct = { _id: "3", ...newProduct };
@@ -113,6 +120,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test PUT /:id
+  // Este test verifica que se actualice un producto.
   test("PUT /api/products/1 debe actualizar un producto", async () => {
     const updatedData = { name: "Producto Actualizado", price: 120 };
     const updatedProduct = {
@@ -133,6 +141,7 @@ describe("Rutas de /barroco/products", () => {
   });
 
   // Test DELETE /:id
+  // Este test verifica que se elimine un producto.
   test("DELETE /api/products/1 debe eliminar un producto", async () => {
     const deletedProduct = { _id: "1" };
     productService.deleteProduct.mockResolvedValue(deletedProduct);

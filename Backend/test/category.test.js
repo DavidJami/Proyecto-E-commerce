@@ -16,6 +16,7 @@ describe("Category API", () => {
     jest.clearAllMocks();
   });
 
+  // Este test verifica que se devuelvan todas las categorias.
   test("GET /barroco/categories debe devolver todas las categorias", async () => {
     const mockCategories = [
       { _id: "1", name: "Ropa" },
@@ -30,6 +31,17 @@ describe("Category API", () => {
     expect(categoryService.getAllCategories).toHaveBeenCalledTimes(1);
   });
 
+  // Este test verifica que el servidor responda 500 si falla el servicio.
+  test("GET /barroco/categories debe devolver 500 si falla el servicio", async () => {
+    categoryService.getAllCategories.mockRejectedValue(new Error("boom"));
+
+    const res = await request(app).get("/barroco/categories");
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body).toHaveProperty("message", "boom");
+  });
+
+  // Este test verifica que se cree una categoria nueva.
   test("POST /barroco/categories debe crear una categoria", async () => {
     const newCategory = { name: "Calzado" };
     const createdCategory = { _id: "3", ...newCategory };
@@ -44,6 +56,7 @@ describe("Category API", () => {
     expect(categoryService.createCategory).toHaveBeenCalledWith(newCategory);
   });
 
+  // Este test verifica que se busque una categoria por id.
   test("GET /barroco/categories/:id debe devolver una categoria por id", async () => {
     const mockCategory = { _id: "1", name: "Ropa" };
     categoryService.getCategoryById.mockResolvedValue(mockCategory);
@@ -55,6 +68,7 @@ describe("Category API", () => {
     expect(categoryService.getCategoryById).toHaveBeenCalledWith("1");
   });
 
+  // Este test verifica que se actualice una categoria.
   test("PUT /barroco/categories/:id debe actualizar una categoria", async () => {
     const updatedCategory = { _id: "1", name: "Moda" };
     categoryService.updateCategory.mockResolvedValue(updatedCategory);
@@ -70,6 +84,7 @@ describe("Category API", () => {
     });
   });
 
+  // Este test verifica que se elimine una categoria.
   test("DELETE /barroco/categories/:id debe eliminar una categoria", async () => {
     const deletedCategory = { _id: "1", name: "Ropa" };
     categoryService.deleteCategory.mockResolvedValue(deletedCategory);
@@ -84,6 +99,7 @@ describe("Category API", () => {
     expect(categoryService.deleteCategory).toHaveBeenCalledWith("1");
   });
 
+  // Este test verifica que falle cuando la categoria no existe.
   test("GET /barroco/categories/:id debe devolver 404 si no existe", async () => {
     categoryService.getCategoryById.mockRejectedValue(
       new Error("Category not found")
@@ -95,6 +111,7 @@ describe("Category API", () => {
     expect(res.body).toHaveProperty("message", "Category not found");
   });
 
+  // Este test verifica que falle si no se puede crear la categoria.
   test("POST /barroco/categories debe devolver 400 si falla la creacion", async () => {
     categoryService.createCategory.mockRejectedValue(
       new Error("name is required")
@@ -108,6 +125,7 @@ describe("Category API", () => {
     expect(res.body).toHaveProperty("message", "name is required");
   });
 
+  // Este test verifica que falle al actualizar una categoria inexistente.
   test("PUT /barroco/categories/:id debe devolver 404 si no existe", async () => {
     categoryService.updateCategory.mockRejectedValue(
       new Error("Category not found")
@@ -121,6 +139,7 @@ describe("Category API", () => {
     expect(res.body).toHaveProperty("message", "Category not found");
   });
 
+  // Este test verifica que falle al borrar una categoria inexistente.
   test("DELETE /barroco/categories/:id debe devolver 404 si no existe", async () => {
     categoryService.deleteCategory.mockRejectedValue(
       new Error("Category not found")

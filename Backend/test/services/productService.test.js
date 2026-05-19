@@ -19,6 +19,7 @@ describe('Pruebas unitarias de productService', () => {
   // =====================================================
   // PRUEBA: Obtener todos los productos
   // =====================================================
+  // Este test verifica que se devuelva la lista de productos.
   test('Debe retornar la lista de productos', async () => {
 
     // Simula que Product.find() devuelve productos
@@ -41,6 +42,7 @@ describe('Pruebas unitarias de productService', () => {
   // =====================================================
   // PRUEBA: Buscar producto por ID inexistente
   // =====================================================
+  // Este test verifica que falle si el producto no existe.
   test('Debe lanzar error si el producto no existe', async () => {
 
     // Simula que no se encontró el producto
@@ -55,6 +57,7 @@ describe('Pruebas unitarias de productService', () => {
   // =====================================================
   // PRUEBA: Crear un producto
   // =====================================================
+  // Este test verifica que se guarde un producto nuevo.
   test('Debe guardar y retornar un producto nuevo', async () => {
 
     // Datos del nuevo producto
@@ -97,6 +100,7 @@ describe('Pruebas unitarias de productService', () => {
   // =====================================================
   // PRUEBA: Productos con descuento personalizado
   // =====================================================
+  // Este test verifica que el descuento se calcule bien.
   test('Debe calcular correctamente el precio con descuento', async () => {
 
     // Simula productos obtenidos de la base de datos
@@ -120,9 +124,20 @@ describe('Pruebas unitarias de productService', () => {
     expect(resultado[0].discountedPrice).toBe(90);
   });
 
+  // Este test verifica que no falle cuando no hay productos personalizados.
+  test('Debe retornar arreglo vacío si no hay productos personalizados', async () => {
+    Product.find = jest.fn().mockResolvedValue([]);
+
+    const resultado = await productService.getCustomDiscountedProducts();
+
+    expect(Product.find).toHaveBeenCalledWith({ custom: true });
+    expect(resultado).toEqual([]);
+  });
+
   // =====================================================
   // PRUEBA: Compra de producto
   // =====================================================
+  // Este test verifica los errores y el flujo correcto de compra.
   test('Debe validar errores y compra exitosa', async () => {
 
     // -------------------------------------------------
@@ -193,9 +208,28 @@ describe('Pruebas unitarias de productService', () => {
     expect(resultado.totalPrice).toBe(20);
   });
 
+  // Este test verifica que falle al actualizar un producto inexistente.
+  test('Debe lanzar error al actualizar si el producto no existe', async () => {
+    Product.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      productService.updateProduct('1', { name: 'X' })
+    ).rejects.toThrow('Producto no encontrado');
+  });
+
+  // Este test verifica que falle al eliminar un producto inexistente.
+  test('Debe lanzar error al eliminar si el producto no existe', async () => {
+    Product.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      productService.deleteProduct('1')
+    ).rejects.toThrow('Producto no encontrado');
+  });
+
     // =====================================================
     // PRUEBA: Productos disponibles, getById, update y delete
     // =====================================================
+    // Este test verifica consultas y operaciones CRUD de productos.
     test('Debe retornar productos disponibles y operaciones CRUD', async () => {
       // getAvailableProducts
       Product.find = jest.fn().mockResolvedValue([{ idProduct: 'a', stock: 2 }]);
