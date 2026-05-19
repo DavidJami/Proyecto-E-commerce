@@ -1,4 +1,4 @@
-const productService = require("../services/productService");
+const productService = require('../services/productService');
 
 exports.getAll = async (req, res) => {
     try {
@@ -39,12 +39,11 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
     try {
         const deleted = await productService.deleteProduct(req.params.id);
-        res.json({ message: "Producto eliminado", product: deleted });
+        res.json({ message: 'Producto eliminado', product: deleted });
     } catch (err) {
         res.status(404).json({ message: err.message });
     }
 };
-
 
 exports.getAvailable = async (req, res) => {
     try {

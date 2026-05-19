@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+const Product = require('../models/product');
 
 exports.getAllProducts = async () => {
     return await Product.find({});
@@ -6,7 +6,7 @@ exports.getAllProducts = async () => {
 
 exports.getProductById = async (id) => {
     const product = await Product.findById(id);
-    if (!product) throw new Error("Producto no encontrado");
+    if (!product) throw new Error('Producto no encontrado');
     return product;
 };
 
@@ -17,13 +17,13 @@ exports.createProduct = async (data) => {
 
 exports.updateProduct = async (id, data) => {
     const updated = await Product.findByIdAndUpdate(id, data, { new: true });
-    if (!updated) throw new Error("Producto no encontrado");
+    if (!updated) throw new Error('Producto no encontrado');
     return updated;
 };
 
 exports.deleteProduct = async (id) => {
     const deleted = await Product.findByIdAndDelete(id);
-    if (!deleted) throw new Error("Producto no encontrado");
+    if (!deleted) throw new Error('Producto no encontrado');
     return deleted;
 };
 
@@ -47,16 +47,16 @@ exports.getCustomDiscountedProducts = async () => {
 
 exports.purchaseProduct = async (idProduct, quantity) => {
     if (!quantity || quantity <= 0) {
-        throw new Error("Cantidad inválida");
+        throw new Error('Cantidad inválida');
     }
 
     const product = await Product.findOne({ idProduct });
     if (!product) {
-        throw new Error("Producto no encontrado");
+        throw new Error('Producto no encontrado');
     }
 
     if (product.stock < quantity) {
-        throw new Error("Stock insuficiente");
+        throw new Error('Stock insuficiente');
     }
 
     product.stock -= quantity;
@@ -65,7 +65,7 @@ exports.purchaseProduct = async (idProduct, quantity) => {
     const totalPrice = +(product.price * quantity).toFixed(2);
 
     return {
-        message: "Compra realizada con éxito",
+        message: 'Compra realizada con éxito',
         product: product.name,
         quantity,
         totalPrice
