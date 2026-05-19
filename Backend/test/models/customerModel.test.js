@@ -67,6 +67,17 @@ function obtenerFuncionesPreSave(schema) {
   return Array.from(new Set(funciones));
 }
 
+function obtenerMiddlewareDePassword(schema) {
+  const funciones = obtenerFuncionesPreSave(schema);
+
+  const middlewareDePassword = funciones.find((funcion) => {
+    const source = funcion && funcion.toString ? funcion.toString() : "";
+    return source.includes("bcrypt.genSalt") || source.includes("bcrypt.hash");
+  });
+
+  return middlewareDePassword ? [middlewareDePassword] : funciones;
+}
+
 // =====================================================
 // PRUEBAS DEL MODELO CUSTOMER
 // =====================================================
@@ -80,6 +91,7 @@ describe('Pruebas de hooks y métodos del modelo Customer', () => {
   // =====================================================
   // PRUEBA: comparePassword()
   // =====================================================
+  // Este test verifica que comparePassword use bcrypt.compare.
   test('Debe comparar contraseñas usando bcrypt.compare', async () => {
 
     // Simula que las contraseñas coinciden
@@ -111,6 +123,7 @@ describe('Pruebas de hooks y métodos del modelo Customer', () => {
   // =====================================================
   // PRUEBA: Hook pre save
   // =====================================================
+  // Este test verifica que la contraseña se cifre solo cuando cambia.
   test('Debe cifrar la contraseña si fue modificada y omitirlo si no cambió', async () => {
 
     // -------------------------------------------------
@@ -135,7 +148,7 @@ describe('Pruebas de hooks y métodos del modelo Customer', () => {
     if (Customer.hashPasswordMiddleware) {
       funcionesPreSave = [Customer.hashPasswordMiddleware];
     } else {
-      funcionesPreSave = obtenerFuncionesPreSave(schema);
+      funcionesPreSave = obtenerMiddlewareDePassword(schema);
     }
 
     // Verifica que existan hooks o el fallback
@@ -220,6 +233,37 @@ describe('Pruebas de hooks y métodos del modelo Customer', () => {
         'plain2',
         expect.anything()
       );
+  });
+
+  // Este test verifica que el hook avise si falla el cifrado.
+  test('Debe llamar next con error si falla el hash de la contraseña', async () => {
+
+    bcrypt.genSalt.mockRejectedValue(new Error('hash failed'));
+
+    const schema = Customer.schema;
+    const funcionesPreSave = Customer.hashPasswordMiddleware
+      ? [Customer.hashPasswordMiddleware]
+      : obtenerMiddlewareDePassword(schema);
+
+    expect(funcionesPreSave.length).toBeGreaterThan(0);
+
+    const documento = {
+      isModified: (campo) => campo === 'password',
+      password: 'plain'
+    };
+
+    const next = jest.fn();
+
+    for (const funcion of funcionesPreSave) {
+      const resultado = funcion.call(documento, next);
+
+      if (resultado && typeof resultado.then === 'function') {
+        await resultado;
+      }
+    }
+
+    expect(next).toHaveBeenCalledWith(expect.any(Error));
+    expect(documento.password).toBe('plain');
   });
 
 });

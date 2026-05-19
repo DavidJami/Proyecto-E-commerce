@@ -16,6 +16,7 @@ describe("Rutas de /barroco/customers", () => {
     jest.clearAllMocks();
   });
 
+  // Este test verifica que se devuelvan todos los clientes.
   test("GET /barroco/customers debe retornar todos los clientes", async () => {
     const mockCustomers = [
       { _id: "hola", name: "Juan" },
@@ -30,6 +31,7 @@ describe("Rutas de /barroco/customers", () => {
     expect(customerService.findAll).toHaveBeenCalledTimes(1);
   });
 
+  // Este test verifica que se cree un cliente nuevo.
   test("POST /barroco/customers debe crear un cliente", async () => {
     const newCustomer = { name: "Lucía" };
     const createdCustomer = { _id: "3", ...newCustomer };
@@ -44,6 +46,7 @@ describe("Rutas de /barroco/customers", () => {
     expect(customerService.create).toHaveBeenCalledWith(newCustomer);
   });
 
+  // Este test verifica que se actualice un cliente.
   test("PUT /barroco/customers/:id debe actualizar un cliente", async () => {
     customerService.update.mockResolvedValue({
       _id: "1",
@@ -61,6 +64,7 @@ describe("Rutas de /barroco/customers", () => {
     });
   });
 
+  // Este test verifica que se elimine un cliente.
   test("DELETE /barroco/customers/:id debe eliminar un cliente", async () => {
     customerService.remove.mockResolvedValue({ _id: "1" });
 
