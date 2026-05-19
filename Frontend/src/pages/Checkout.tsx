@@ -12,7 +12,7 @@ import { getCurrentUser } from "@/lib/api";
 export default function Checkout() {
   const navigate = useNavigate();
   const [sameAddress, setSameAddress] = useState(true);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
   const [shipping, setShipping] = useState({
@@ -34,7 +34,7 @@ export default function Checkout() {
 
   // VALIDACIONES ===============================
   const validateAll = () => {
-    const newErr = {};
+    const newErr: Record<string, string> = {};
 
     // CONTACTO
     if (!contact.name.trim()) newErr.name = "Ingrese su nombre completo.";
