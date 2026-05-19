@@ -1,0 +1,196 @@
+// Simula el modelo Product antes de importar el servicio
+// Esto evita usar la base de datos real en las pruebas
+jest.mock('../../models/product');
+
+// Importa el modelo Product
+const Product = require('../../models/product');
+
+// Importa el servicio que vamos a probar
+const productService = require('../../services/productService');
+
+// Grupo de pruebas unitarias del servicio de productos
+describe('Pruebas unitarias de productService', () => {
+
+  // Limpia todos los mocks antes de cada prueba
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // =====================================================
+  // PRUEBA: Obtener todos los productos
+  // =====================================================
+  test('Debe retornar la lista de productos', async () => {
+
+    // Simula que Product.find() devuelve productos
+    Product.find = jest.fn().mockResolvedValue([
+      { name: 'Producto A' }
+    ]);
+
+    // Ejecuta la función del servicio
+    const resultado = await productService.getAllProducts();
+
+    // Verifica que find() se llamó con un objeto vacío
+    expect(Product.find).toHaveBeenCalledWith({});
+
+    // Verifica que el resultado sea correcto
+    expect(resultado).toEqual([
+      { name: 'Producto A' }
+    ]);
+  });
+
+  // =====================================================
+  // PRUEBA: Buscar producto por ID inexistente
+  // =====================================================
+  test('Debe lanzar error si el producto no existe', async () => {
+
+    // Simula que no se encontró el producto
+    Product.findById = jest.fn().mockResolvedValue(null);
+
+    // Verifica que se lance el error esperado
+    await expect(
+      productService.getProductById('x')
+    ).rejects.toThrow('Producto no encontrado');
+  });
+
+  // =====================================================
+  // PRUEBA: Crear un producto
+  // =====================================================
+  test('Debe guardar y retornar un producto nuevo', async () => {
+
+    // Datos del nuevo producto
+    const datos = {
+      name: 'Nuevo Producto',
+      price: 10
+    };
+
+    // Simula la función save()
+    const save = jest.fn().mockResolvedValue({
+      _id: '1',
+      ...datos
+    });
+
+    // Simula el constructor Product
+    const MockProduct = jest.fn().mockImplementation(() => ({
+      save
+    }));
+
+    // Simula métodos estáticos vacíos
+    MockProduct.find = jest.fn();
+    MockProduct.findById = jest.fn();
+
+    // Reemplaza Product por el mock
+    Product.mockImplementation(MockProduct);
+
+    // Ejecuta createProduct()
+    const creado = await productService.createProduct(datos);
+
+    // Verifica que save() fue ejecutado
+    expect(save).toHaveBeenCalled();
+
+    // Verifica el producto creado
+    expect(creado).toEqual({
+      _id: '1',
+      ...datos
+    });
+  });
+
+  // =====================================================
+  // PRUEBA: Productos con descuento personalizado
+  // =====================================================
+  test('Debe calcular correctamente el precio con descuento', async () => {
+
+    // Simula productos obtenidos de la base de datos
+    Product.find = jest.fn().mockResolvedValue([
+      {
+        idProduct: 'p1',
+        name: 'Producto',
+        description: 'Descripción',
+        price: 100,
+        stock: 2,
+        cathegory: 'Categoría',
+        custom: true
+      }
+    ]);
+
+    // Ejecuta la función
+    const resultado = await productService.getCustomDiscountedProducts();
+
+    // Verifica que el descuento sea correcto
+    // 100 - 10% = 90
+    expect(resultado[0].discountedPrice).toBe(90);
+  });
+
+  // =====================================================
+  // PRUEBA: Compra de producto
+  // =====================================================
+  test('Debe validar errores y compra exitosa', async () => {
+
+    // -------------------------------------------------
+    // Caso 1: Cantidad inválida
+    // -------------------------------------------------
+
+    // Verifica que no se permita comprar 0 productos
+    await expect(
+      productService.purchaseProduct('p', 0)
+    ).rejects.toThrow('Cantidad inválida');
+
+    // -------------------------------------------------
+    // Caso 2: Producto no encontrado
+    // -------------------------------------------------
+
+    // Simula que el producto no existe
+    Product.findOne = jest.fn().mockResolvedValue(null);
+
+    // Verifica el error
+    await expect(
+      productService.purchaseProduct('p', 1)
+    ).rejects.toThrow('Producto no encontrado');
+
+    // -------------------------------------------------
+    // Caso 3: Stock insuficiente
+    // -------------------------------------------------
+
+    // Simula un producto con poco stock
+    const productoStockBajo = {
+      idProduct: 'p',
+      stock: 1,
+      price: 10
+    };
+
+    Product.findOne = jest.fn().mockResolvedValue(productoStockBajo);
+
+    // Verifica que se lance el error
+    await expect(
+      productService.purchaseProduct('p', 2)
+    ).rejects.toThrow('Stock insuficiente');
+
+    // -------------------------------------------------
+    // Caso 4: Compra exitosa
+    // -------------------------------------------------
+
+    // Simula un producto válido
+    const producto = {
+      idProduct: 'p',
+      stock: 5,
+      price: 10,
+      name: 'Producto X',
+
+      // Simula guardar cambios
+      save: jest.fn().mockResolvedValue(true)
+    };
+
+    // Simula encontrar el producto
+    Product.findOne = jest.fn().mockResolvedValue(producto);
+
+    // Ejecuta la compra
+    const resultado = await productService.purchaseProduct('p', 2);
+
+    // Verifica que save() se llamó
+    expect(producto.save).toHaveBeenCalled();
+
+    // Verifica el precio total
+    // 2 productos * $10 = $20
+    expect(resultado.totalPrice).toBe(20);
+  });
+
+});
