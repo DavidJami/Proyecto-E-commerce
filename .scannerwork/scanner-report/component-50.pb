@@ -1,0 +1,1 @@
+2 2tsXúhr2Frontend/src/components/RegisterProductSection.tsx

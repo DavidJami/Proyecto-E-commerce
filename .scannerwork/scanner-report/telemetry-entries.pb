@@ -1,0 +1,64 @@
+
+text.civendor_semaphore07
+.javascript.telemetry.typescript.native-previewfalse!
+text.civendor_azurepipelines0"
+jre_provisioning_disabledfalseL
+>javascript.telemetry.typescript.compiler-options.noImplicitAny
+false,true 
+text.civendor_dockercompose0K
+=javascript.telemetry.typescript.compiler-options.alwaysStrict
+false,true%
+ text.analyzed_hidden_files_count2I
+@javascript.telemetry.typescript.compiler-options.moduleDetectionforce1
+(javascript.telemetry.typescript.versions5.5.3#
+javascript.runtime.version24.11R
+Djavascript.telemetry.typescript.compiler-options.strictBindCallApply
+false,trueE
+=javascript.telemetry.typescript.compiler-options.skipLibChecktrueM
+?javascript.telemetry.typescript.compiler-options.noImplicitThis
+false,true
+sonar.scanner.app
+ScannerCli
+text.civendor_circleci0&
+ javascript.runtime.major-version24P
+Hjavascript.telemetry.typescript.compiler-options.useDefineForClassFieldstrue
+text.civendor_buildkite05
+)javascript.runtime.node-executable-originembedded
+text.civendor_travisci0$
+text.sensor_time_ms_community590L
+Ajavascript.telemetry.typescript.compiler-options.moduleResolutionbundler
+text.civendor_jenkins0N
+scanner.git_remote_url4https://github.com/DavidJami/Proyecto-E-commerce.git@
+8javascript.telemetry.typescript.compiler-options.allowJstrue(
+!text.all_tracked_text_files_count136H
+@javascript.telemetry.typescript.compiler-options.isolatedModulestrue?
+:javascript.telemetry.typescript.program-creation.attempted4A
+4javascript.telemetry.typescript.compiler-options.jsx	react-jsx5
+/javascript.telemetry.module-type.esm-file-count80]
+4javascript.telemetry.typescript.compiler-options.lib%dom,dom.iterable,es2020,es2023,esnext[
+Mjavascript.telemetry.typescript.compiler-options.strictPropertyInitialization
+false,trueY
+Kjavascript.telemetry.typescript.compiler-options.useUnknownInCatchVariables
+false,trueS
+Kjavascript.telemetry.typescript.compiler-options.allowImportingTsExtensionstrueR
+Djavascript.telemetry.typescript.compiler-options.strictFunctionTypes
+false,true&
+sonar.scanner.appVersion
+4.1.0.1829 
+text.analyzed_files_count128
+text.civendor_appveyor09
+(javascript.telemetry.ecmascript.versionsES2020,ES2023A
+7javascript.telemetry.typescript.compiler-options.moduleesnextO
+Ajavascript.telemetry.typescript.compiler-options.strictNullChecks
+false,true<
+7javascript.telemetry.typescript.program-creation.failed0E
+7javascript.telemetry.typescript.compiler-options.strict
+false,true
+text.civendor_bamboo0?
+:javascript.telemetry.typescript.program-creation.succeeded4
+text.civendor_gitlab0%
+ text.civendor_bitbucketpipelines05
+/javascript.telemetry.module-type.cjs-file-count32H
+7javascript.telemetry.typescript.compiler-options.targetes2020,es2022Z
+Ljavascript.telemetry.typescript.compiler-options.strictBuiltinIteratorReturn
+false,true

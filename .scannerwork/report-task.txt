@@ -1,6 +1,6 @@
-projectKey=Proyecto-Ecommerce-Backend
+projectKey=app
 serverUrl=http://localhost:9000
 serverVersion=26.5.0.122743
-dashboardUrl=http://localhost:9000/dashboard?id=Proyecto-Ecommerce-Backend
-ceTaskId=51404204-b105-452d-a286-2241a21f1232
-ceTaskUrl=http://localhost:9000/api/ce/task?id=51404204-b105-452d-a286-2241a21f1232
+dashboardUrl=http://localhost:9000/dashboard?id=app
+ceTaskId=a84dd6c9-9c6a-4a23-a55d-8aec188280d0
+ceTaskUrl=http://localhost:9000/api/ce/task?id=a84dd6c9-9c6a-4a23-a55d-8aec188280d0

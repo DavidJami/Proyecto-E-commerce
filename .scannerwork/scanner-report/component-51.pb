@@ -1,0 +1,1 @@
+3 2tsXEhr(Frontend/src/components/StockSection.tsx
