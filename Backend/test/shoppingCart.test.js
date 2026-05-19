@@ -16,6 +16,7 @@ describe('ShoppingCart API', () => {
     jest.clearAllMocks();
   });
 
+  // Este test verifica que el carrito se liste vacío al inicio.
   test('GET /api/cart debe devolver lista vacía', async () => {
     shoppingCartService.getAllShoppingCarts.mockResolvedValue([]);
     
@@ -27,6 +28,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.getAllShoppingCarts).toHaveBeenCalledTimes(1);
   });
 
+  // Este test verifica que se pueda crear un carrito nuevo.
   test('POST /api/cart debe crear un carrito', async () => {
     const newCart = {
       customer: 'dennison',
@@ -44,6 +46,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.createShoppingCart).toHaveBeenCalledWith(newCart);
   });
 
+  // Este test verifica que falle si no viene el cliente.
   test('POST /api/cart debe fallar si falta el cliente', async () => {
     const invalidCart = { 
       products: [{ idProduct: 'prod1', quantity: 2, price: 10 }], 
@@ -59,6 +62,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que el carrito creado luego se pueda ver.
   test('GET /api/cart después de crear un carrito debe devolverlo', async () => {
     const mockCarts = [
       { idShoppingCart: 1, customer: 'Ana', products: [{ idProduct: 'prod2', quantity: 1, price: 15 }], total: 15 }
@@ -72,6 +76,7 @@ describe('ShoppingCart API', () => {
     expect(res.body.some(c => c.customer === 'Ana')).toBe(true);
   });
 
+  // Este test verifica que se manejen varios carritos a la vez.
   test('POST /api/cart permite múltiples carritos', async () => {
     const mockCarts = [
       { idShoppingCart: 1, customer: 'Luis', products: [{ idProduct: 'prod3', quantity: 1, price: 5 }], total: 5 },
@@ -86,6 +91,7 @@ describe('ShoppingCart API', () => {
     expect(res.body.some(c => c.customer === 'Maria')).toBe(true);
   });
 
+  // Este test verifica que falle cuando no llega el total.
   test('POST /api/cart debe fallar si total está vacío', async () => {
     const invalidCart = { 
       customer: 'Juan', 
@@ -101,11 +107,13 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que una ruta inválida responda 404.
   test('GET a una ruta inexistente devuelve 404', async () => {
     const res = await request(app).get('/api/unknown');
     expect(res.statusCode).toBe(404);
   });
 
+  // Este test verifica que se actualice un carrito existente.
   test('PUT /api/cart/:id actualiza el carrito', async () => {
     const updatedCart = { 
       idShoppingCart: 1, 
@@ -122,6 +130,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.updateShoppingCart).toHaveBeenCalledWith('1', { total: 16 });
   });
 
+  // Este test verifica que se elimine un carrito por id.
   test('DELETE /api/cart/:id elimina el carrito', async () => {
     const deletedCart = { 
       idShoppingCart: 1, 
@@ -138,6 +147,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.deleteShoppingCart).toHaveBeenCalledWith('1');
   });
 
+  // Este test verifica que se obtenga un carrito puntual.
   test('GET /api/cart/:id debe devolver un carrito específico', async () => {
     const mockCart = { 
       idShoppingCart: 1, 
@@ -155,6 +165,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.getShoppingCartById).toHaveBeenCalledWith('1');
   });
 
+  // Este test verifica que falte el carrito cuando no existe.
   test('GET /api/cart/:id debe devolver 404 si no existe', async () => {
     shoppingCartService.getShoppingCartById.mockResolvedValue(null);
     
@@ -164,6 +175,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que no se actualice un carrito inexistente.
   test('PUT /api/cart/:id debe devolver 404 si no existe', async () => {
     shoppingCartService.updateShoppingCart.mockResolvedValue(null);
     
@@ -173,6 +185,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que no se borre un carrito inexistente.
   test('DELETE /api/cart/:id debe devolver 404 si no existe', async () => {
     shoppingCartService.deleteShoppingCart.mockResolvedValue(null);
     
@@ -182,6 +195,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que el carrito acepte varios productos.
   test('POST /api/cart debe crear carrito con múltiples productos', async () => {
     const newCart = {
       customer: 'Ricardo',
@@ -202,6 +216,7 @@ describe('ShoppingCart API', () => {
     expect(res.body.total).toBe(55);
   });
 
+  // Este test verifica que se actualicen los productos del carrito.
   test('PUT /api/cart/:id debe actualizar productos del carrito', async () => {
     const updatedCart = { 
       idShoppingCart: 2, 
@@ -223,6 +238,7 @@ describe('ShoppingCart API', () => {
     expect(res.body.total).toBe(40);
   });
 
+  // Este test verifica que se busque el carrito por cliente.
   test('GET /api/cart/customer/:customerId debe devolver carrito por cliente', async () => {
     const mockCart = { 
       idShoppingCart: 3, 
@@ -239,6 +255,7 @@ describe('ShoppingCart API', () => {
     expect(shoppingCartService.getShoppingCartByCustomer).toHaveBeenCalledWith('cliente123');
   });
 
+  // Este test verifica que no haya carrito para un cliente inexistente.
   test('GET /api/cart/customer/:customerId debe devolver 404 si no existe', async () => {
     shoppingCartService.getShoppingCartByCustomer.mockResolvedValue(null);
     
@@ -248,6 +265,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que falle si no hay productos en el carrito.
   test('POST /api/cart debe fallar si productos está vacío', async () => {
     const invalidCart = { 
       customer: 'Pablo', 
@@ -264,6 +282,7 @@ describe('ShoppingCart API', () => {
     expect(res.body).toHaveProperty('error');
   });
 
+  // Este test verifica que se cree un carrito aunque el total sea cero.
   test('POST /api/cart debe crear carrito con total 0', async () => {
     const newCart = {
       customer: 'Gratis',
@@ -279,6 +298,7 @@ describe('ShoppingCart API', () => {
     expect(res.body.total).toBe(0);
   });
 
+  // Este test verifica que se actualice solo el total del carrito.
   test('PUT /api/cart/:id debe actualizar solo el total', async () => {
     const updatedCart = { 
       idShoppingCart: 1, 

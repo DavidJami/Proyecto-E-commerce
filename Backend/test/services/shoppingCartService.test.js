@@ -18,6 +18,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Crear carrito de compras
   // =====================================================
+  // Este test verifica que se cree un carrito y se guarde bien.
   test('Debe crear un carrito de compras y guardar los datos', async () => {
 
     // Simula la función save()
@@ -48,6 +49,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Obtener todos los carritos
   // =====================================================
+  // Este test verifica que se devuelvan todos los carritos.
   test('Debe retornar todos los carritos de compras', async () => {
 
     // Simula que find() devuelve un arreglo vacío
@@ -63,6 +65,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Obtener carrito por ID
   // =====================================================
+  // Este test verifica que se busque un carrito por id.
   test('Debe buscar un carrito por ID', async () => {
 
     // Simula que se encontró un carrito
@@ -85,6 +88,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Actualizar carrito
   // =====================================================
+  // Este test verifica que se actualice un carrito existente.
   test('Debe actualizar un carrito de compras', async () => {
 
     // Simula la actualización del carrito
@@ -112,6 +116,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Eliminar carrito
   // =====================================================
+  // Este test verifica que se elimine un carrito.
   test('Debe eliminar un carrito de compras', async () => {
 
     // Simula que el carrito fue eliminado
@@ -134,6 +139,7 @@ describe('Pruebas unitarias de shoppingCartService', () => {
   // =====================================================
   // PRUEBA: Obtener carrito por cliente
   // =====================================================
+  // Este test verifica que se encuentre un carrito por cliente.
   test('Debe buscar un carrito usando el cliente', async () => {
 
     // Simula que se encontró un carrito del cliente

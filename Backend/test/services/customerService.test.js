@@ -9,6 +9,7 @@ describe('Pruebas unitarias de customerService', () => {
   // =====================================================
   // PRUEBA: Obtener todos los clientes
   // =====================================================
+  // Este test verifica que se devuelvan todos los clientes.
   test('Debe retornar todos los clientes', async () => {
 
     // Simula que Customer.find() devuelve un arreglo con clientes
@@ -29,6 +30,7 @@ describe('Pruebas unitarias de customerService', () => {
   });
 
   
+  // Este test verifica que falle si no existe el cliente buscado.
   test('Debe lanzar error si el cliente no existe al buscar por ID', async () => {
 
     // Simula que no se encontró ningún cliente
@@ -43,6 +45,7 @@ describe('Pruebas unitarias de customerService', () => {
   // =====================================================
   // PRUEBA: Crear un cliente
   // =====================================================
+  // Este test verifica que se cree un cliente correctamente.
   test('Debe crear un cliente correctamente', async () => {
 
     // Simula la creación de un cliente
@@ -68,6 +71,7 @@ describe('Pruebas unitarias de customerService', () => {
   // =====================================================
   // PRUEBA: Actualizar cliente inexistente
   // =====================================================
+  // Este test verifica que falle al actualizar un cliente inexistente.
   test('Debe lanzar error si el cliente no existe al actualizar', async () => {
 
     // Simula que el cliente no fue encontrado
@@ -84,6 +88,7 @@ describe('Pruebas unitarias de customerService', () => {
   // =====================================================
   // PRUEBA: Eliminar cliente inexistente
   // =====================================================
+  // Este test verifica que falle al eliminar un cliente inexistente.
   test('Debe lanzar error si el cliente no existe al eliminar', async () => {
 
     // Simula que no existe el cliente a eliminar
@@ -98,6 +103,7 @@ describe('Pruebas unitarias de customerService', () => {
   // =====================================================
   // CASOS EXITOSOS: findById, update y remove
   // =====================================================
+  // Este test verifica que findById devuelva el cliente cuando existe.
   test('findById debe retornar cliente cuando existe', async () => {
     Customer.findById = jest.fn().mockResolvedValue({ _id: '2', name: 'Existe' });
     const res = await customerService.findById('2');
@@ -105,6 +111,7 @@ describe('Pruebas unitarias de customerService', () => {
     expect(res.name).toBe('Existe');
   });
 
+  // Este test verifica que update devuelva el cliente actualizado.
   test('update debe retornar objeto actualizado cuando existe', async () => {
     Customer.findByIdAndUpdate = jest.fn().mockResolvedValue({ _id: '3', name: 'Updated' });
     const res = await customerService.update('3', { name: 'Updated' });
@@ -112,6 +119,7 @@ describe('Pruebas unitarias de customerService', () => {
     expect(res.name).toBe('Updated');
   });
 
+  // Este test verifica que remove devuelva el cliente eliminado.
   test('remove debe retornar eliminado cuando existe', async () => {
     Customer.findByIdAndDelete = jest.fn().mockResolvedValue({ _id: '4' });
     const res = await customerService.remove('4');
