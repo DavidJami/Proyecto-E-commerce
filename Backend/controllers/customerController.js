@@ -42,7 +42,7 @@ exports.updateRole = async (req, res) => {
         }
 
         res.json({ message: 'Rol actualizado exitosamente', customer });
-    } catch (error) {
+    } catch {
         //console.error('Error al actualizar rol:', error);
         res.status(500).json({ message: 'Error al actualizar rol' });
     }
@@ -57,7 +57,7 @@ exports.checkAdminExists = async (req, res) => {
         } else {
             return res.json({ message: 'No hay ningún admin' });
         }
-    } catch (error) {
+    } catch {
         //console.error('Error al verificar admin:', error);
         res.status(500).json({ message: 'Error al verificar admin' });
     }

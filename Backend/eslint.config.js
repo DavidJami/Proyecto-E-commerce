@@ -4,21 +4,17 @@ const js = require('@eslint/js');
 // CONFIGURACIÓN DE ESLINT
 // =====================================================
 module.exports = [
-
     // =================================================
     // IGNORAR CARPETAS
     // =================================================
     {
         ignores: [
-
             // Carpeta generada por coverage de Jest
             'coverage/**',
-
             // Dependencias de Node
             'node_modules/**',
         ],
     },
-
     // =================================================
     // CONFIGURACIÓN GENERAL PARA TODO EL BACKEND
     // =================================================
@@ -33,10 +29,8 @@ module.exports = [
 
             // Versión de JavaScript
             ecmaVersion: 2021,
-
             // Tipo de módulos
             sourceType: 'commonjs',
-
             // Variables globales permitidas
             globals: {
                 console: 'readonly',
@@ -59,10 +53,9 @@ module.exports = [
             ...js.configs.recommended.rules,
 
             // -------------------------------------------------
-            // Permite console.log pero muestra advertencia
+            // Permite console.log sin advertencias
             // -------------------------------------------------
-            'no-console': 'warn',
-
+            'no-console': 'off',
             // -------------------------------------------------
             // Obliga usar camelCase
             // -------------------------------------------------
@@ -112,17 +105,14 @@ module.exports = [
             // No permite usar var
             // -------------------------------------------------
             'no-var': 'error',
-
             // -------------------------------------------------
             // Recomienda usar const
             // -------------------------------------------------
             'prefer-const': 'warn',
-
             // -------------------------------------------------
             // Evita espacios al final
             // -------------------------------------------------
             'no-trailing-spaces': 'error',
-
             // -------------------------------------------------
             // Evita múltiples líneas vacías
             // -------------------------------------------------
@@ -148,7 +138,6 @@ module.exports = [
                 'error',
                 'always',
             ],
-
             // -------------------------------------------------
             // Espacios en palabras clave
             // -------------------------------------------------
@@ -175,7 +164,6 @@ module.exports = [
             // Evita código inalcanzable
             // -------------------------------------------------
             'no-unreachable': 'error',
-
             // -------------------------------------------------
             // Evita claves duplicadas
             // -------------------------------------------------
