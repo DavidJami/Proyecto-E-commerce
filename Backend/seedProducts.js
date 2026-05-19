@@ -6,7 +6,7 @@ require('dotenv').config();
 const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Conectado a MongoDB'))
-    .catch((err) => console.error('Error al conectar a MongoDB:', err));
+    .catch(() => console.error('Error al conectar a MongoDB'));
 
 // Productos de prueba
 const products = [
@@ -22,7 +22,7 @@ const seedProducts = async () => {
         await Product.insertMany(products);
         //console.log('Productos insertados correctamente');
         mongoose.connection.close();
-    } catch (err) {
+    } catch {
         //console.error('Error al insertar productos:', err);
         mongoose.connection.close();
     }
