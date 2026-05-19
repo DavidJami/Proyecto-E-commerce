@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const connectDB = async () => {
     console.log('Intentando conectar a MongoDB con URI:', process.env.MONGODB_URI);
@@ -7,9 +7,9 @@ const connectDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log(" Conectado a MongoDB");
+        console.log(' Conectado a MongoDB');
     } catch (err) {
-        console.error(" Error al conectar a MongoDB:", err.message);
+        //console.error(' Error al conectar a MongoDB:', err.message);
         process.exit(1);
     }
 };

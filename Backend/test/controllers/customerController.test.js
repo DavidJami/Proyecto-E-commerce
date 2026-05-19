@@ -1,166 +1,166 @@
-const customerController = require("../../controllers/customerController");
-const customerService = require("../../services/customerService");
-const Customer = require("../../models/customer");
+const customerController = require('../../controllers/customerController');
+const customerService = require('../../services/customerService');
+const Customer = require('../../models/customer');
 
-jest.mock("../../services/customerService");
-jest.mock("../../models/customer");
+jest.mock('../../services/customerService');
+jest.mock('../../models/customer');
 
-describe("customerController", () => {
+describe('customerController', () => {
 
-  let req;
-  let res;
-  let consoleErrorSpy;
+    let req;
+    let res;
+    let consoleErrorSpy;
 
-  beforeEach(() => {
+    beforeEach(() => {
 
-    req = {
-      params: {},
-      body: {}
-    };
+        req = {
+            params: {},
+            body: {}
+        };
 
-    res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis()
-    };
+        res = {
+            json: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        };
 
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
-  });
-
-  // =====================================================
-  // getById -> cliente NO encontrado
-  // =====================================================
-  test("Debe retornar 404 si el cliente no existe", async () => {
-
-    customerService.findById.mockResolvedValue(null);
-
-    req.params.id = "1";
-
-    await customerController.getById(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Customer not found"
-    });
-  });
-
-  // =====================================================
-  // updateRole -> éxito
-  // =====================================================
-  test("Debe actualizar el rol correctamente", async () => {
-
-    req.body = {
-      email: "test@test.com",
-      role: "admin"
-    };
-
-    Customer.findOneAndUpdate.mockResolvedValue({
-      email: "test@test.com",
-      role: "admin"
+        jest.clearAllMocks();
     });
 
-    await customerController.updateRole(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Rol actualizado exitosamente",
-      customer: expect.any(Object)
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
     });
-  });
 
-  // =====================================================
-  // updateRole -> usuario no encontrado
-  // =====================================================
-  test("Debe retornar 404 si el usuario no existe", async () => {
+    // =====================================================
+    // getById -> cliente NO encontrado
+    // =====================================================
+    test('Debe retornar 404 si el cliente no existe', async () => {
 
-    req.body = {
-      email: "fake@test.com",
-      role: "admin"
-    };
+        customerService.findById.mockResolvedValue(null);
 
-    Customer.findOneAndUpdate.mockResolvedValue(null);
+        req.params.id = '1';
 
-    await customerController.updateRole(req, res);
+        await customerController.getById(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.status).toHaveBeenCalledWith(404);
 
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Usuario no encontrado"
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Customer not found'
+        });
     });
-  });
 
-  // =====================================================
-  // updateRole -> error interno
-  // =====================================================
-  test("Debe retornar error 500 en updateRole", async () => {
+    // =====================================================
+    // updateRole -> éxito
+    // =====================================================
+    test('Debe actualizar el rol correctamente', async () => {
 
-    req.body = {
-      email: "test@test.com",
-      role: "admin"
-    };
+        req.body = {
+            email: 'test@test.com',
+            role: 'admin'
+        };
 
-    Customer.findOneAndUpdate.mockRejectedValue(
-      new Error("Error DB")
-    );
+        Customer.findOneAndUpdate.mockResolvedValue({
+            email: 'test@test.com',
+            role: 'admin'
+        });
 
-    await customerController.updateRole(req, res);
+        await customerController.updateRole(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Error al actualizar rol"
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Rol actualizado exitosamente',
+            customer: expect.any(Object)
+        });
     });
-  });
 
-  // =====================================================
-  // checkAdminExists -> admin encontrado
-  // =====================================================
-  test("Debe indicar que existe un admin", async () => {
+    // =====================================================
+    // updateRole -> usuario no encontrado
+    // =====================================================
+    test('Debe retornar 404 si el usuario no existe', async () => {
 
-    Customer.exists.mockResolvedValue(true);
+        req.body = {
+            email: 'fake@test.com',
+            role: 'admin'
+        };
 
-    await customerController.checkAdminExists(req, res);
+        Customer.findOneAndUpdate.mockResolvedValue(null);
 
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Admin encontrado"
+        await customerController.updateRole(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(404);
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Usuario no encontrado'
+        });
     });
-  });
 
-  // =====================================================
-  // checkAdminExists -> no existe admin
-  // =====================================================
-  test("Debe indicar que no existe admin", async () => {
+    // =====================================================
+    // updateRole -> error interno
+    // =====================================================
+    test('Debe retornar error 500 en updateRole', async () => {
 
-    Customer.exists.mockResolvedValue(false);
+        req.body = {
+            email: 'test@test.com',
+            role: 'admin'
+        };
 
-    await customerController.checkAdminExists(req, res);
+        Customer.findOneAndUpdate.mockRejectedValue(
+            new Error('Error DB')
+        );
 
-    expect(res.json).toHaveBeenCalledWith({
-      message: "No hay ningún admin"
+        await customerController.updateRole(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Error al actualizar rol'
+        });
     });
-  });
 
-  // =====================================================
-  // checkAdminExists -> error interno
-  // =====================================================
-  test("Debe retornar error 500 al verificar admin", async () => {
+    // =====================================================
+    // checkAdminExists -> admin encontrado
+    // =====================================================
+    test('Debe indicar que existe un admin', async () => {
 
-    Customer.exists.mockRejectedValue(
-      new Error("Error DB")
-    );
+        Customer.exists.mockResolvedValue(true);
 
-    await customerController.checkAdminExists(req, res);
+        await customerController.checkAdminExists(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Error al verificar admin"
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Admin encontrado'
+        });
     });
-  });
+
+    // =====================================================
+    // checkAdminExists -> no existe admin
+    // =====================================================
+    test('Debe indicar que no existe admin', async () => {
+
+        Customer.exists.mockResolvedValue(false);
+
+        await customerController.checkAdminExists(req, res);
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'No hay ningún admin'
+        });
+    });
+
+    // =====================================================
+    // checkAdminExists -> error interno
+    // =====================================================
+    test('Debe retornar error 500 al verificar admin', async () => {
+
+        Customer.exists.mockRejectedValue(
+            new Error('Error DB')
+        );
+
+        await customerController.checkAdminExists(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Error al verificar admin'
+        });
+    });
 
 });

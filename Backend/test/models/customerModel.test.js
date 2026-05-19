@@ -3,79 +3,79 @@ jest.mock('bcryptjs');
 const bcrypt = require('bcryptjs');
 const Customer = require('../../models/customer');
 function obtenerFuncionesPreSave(schema) {
-  const funciones = [];
+    const funciones = [];
 
-  // -------------------------------------------------
-  // Busca hooks en versiones modernas de mongoose
-  // -------------------------------------------------
-  if (
-    schema &&
+    // -------------------------------------------------
+    // Busca hooks en versiones modernas de mongoose
+    // -------------------------------------------------
+    if (
+        schema &&
     schema.s &&
     schema.s.hooks &&
     schema.s.hooks._pres &&
-    schema.s.hooks._pres.get("save")
-  ) {
+    schema.s.hooks._pres.get('save')
+    ) {
 
-    const arreglo = schema.s.hooks._pres.get("save");
+        const arreglo = schema.s.hooks._pres.get('save');
 
-    arreglo.forEach(item => {
+        arreglo.forEach(item => {
 
-      // Guarda la función encontrada
-      if (item && (item.fn || typeof item === 'function')) {
-        funciones.push(item.fn || item);
-      }
-    });
-  }
+            // Guarda la función encontrada
+            if (item && (item.fn || typeof item === 'function')) {
+                funciones.push(item.fn || item);
+            }
+        });
+    }
 
-  // -------------------------------------------------
-  // Busca hooks en otras versiones de mongoose
-  // -------------------------------------------------
-  if (schema && schema.stack && Array.isArray(schema.stack)) {
+    // -------------------------------------------------
+    // Busca hooks en otras versiones de mongoose
+    // -------------------------------------------------
+    if (schema && schema.stack && Array.isArray(schema.stack)) {
 
-    schema.stack.forEach(item => {
+        schema.stack.forEach(item => {
 
-      if (
-        item &&
+            if (
+                item &&
         item.kind === 'pre' &&
         item.hook === 'save' &&
         item.fn
-      ) {
-        funciones.push(item.fn);
-      }
-    });
-  }
+            ) {
+                funciones.push(item.fn);
+            }
+        });
+    }
 
-  // -------------------------------------------------
-  // Busca middleware en versiones antiguas
-  // -------------------------------------------------
-  if (schema && schema._middleware && Array.isArray(schema._middleware)) {
+    // -------------------------------------------------
+    // Busca middleware en versiones antiguas
+    // -------------------------------------------------
+    if (schema && schema._middleware && Array.isArray(schema._middleware)) {
 
-    schema._middleware.forEach(middleware => {
+        schema._middleware.forEach(middleware => {
 
-      if (
-        middleware.hook === 'save' &&
+            if (
+                middleware.hook === 'save' &&
         middleware.fn
-      ) {
-        funciones.push(middleware.fn);
-      }
-    });
-  }
+            ) {
+                funciones.push(middleware.fn);
+            }
+        });
+    }
 
-  // -------------------------------------------------
-  // Elimina funciones repetidas
-  // -------------------------------------------------
-  return Array.from(new Set(funciones));
+    // -------------------------------------------------
+    // Elimina funciones repetidas
+    // -------------------------------------------------
+    return Array.from(new Set(funciones));
 }
 
 function obtenerMiddlewareDePassword(schema) {
-  const funciones = obtenerFuncionesPreSave(schema);
+    const funciones = obtenerFuncionesPreSave(schema);
 
-  const middlewareDePassword = funciones.find((funcion) => {
-    const source = funcion && funcion.toString ? funcion.toString() : "";
-    return source.includes("bcrypt.genSalt") || source.includes("bcrypt.hash");
-  });
+    const middlewareDePassword = funciones.find((funcion) => {
+        const source = funcion && funcion.toString ? funcion.toString() : '';
+        return source.includes('bcrypt.genSalt') || source.includes('bcrypt.hash');
+    });
 
-  return middlewareDePassword ? [middlewareDePassword] : funciones;
+    return middlewareDePassword ? [middlewareDePassword] : funciones;
 }
 
 // =====================================================
@@ -83,187 +83,187 @@ function obtenerMiddlewareDePassword(schema) {
 // =====================================================
 describe('Pruebas de hooks y métodos del modelo Customer', () => {
 
-  // Limpia todos los mocks antes de cada prueba
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  // =====================================================
-  // PRUEBA: comparePassword()
-  // =====================================================
-  // Este test verifica que comparePassword use bcrypt.compare.
-  test('Debe comparar contraseñas usando bcrypt.compare', async () => {
-
-    // Simula que las contraseñas coinciden
-    bcrypt.compare.mockResolvedValue(true);
-
-    // Crea un cliente de prueba
-    const cliente = new Customer({
-      firstName: 'A',
-      lastName: 'B',
-      email: 'a@b.com',
-      password: 'hashed',
-      phone: '1',
-      billingAddress: 'direccion'
+    // Limpia todos los mocks antes de cada prueba
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    // Ejecuta comparePassword()
-    const resultado = await cliente.comparePassword('candidate');
+    // =====================================================
+    // PRUEBA: comparePassword()
+    // =====================================================
+    // Este test verifica que comparePassword use bcrypt.compare.
+    test('Debe comparar contraseñas usando bcrypt.compare', async () => {
 
-    // Verifica que bcrypt.compare() fue llamado correctamente
-    expect(bcrypt.compare).toHaveBeenCalledWith(
-      'candidate',
-      'hashed'
-    );
+        // Simula que las contraseñas coinciden
+        bcrypt.compare.mockResolvedValue(true);
 
-    // Verifica que la comparación devolvió true
-    expect(resultado).toBe(true);
-  });
+        // Crea un cliente de prueba
+        const cliente = new Customer({
+            firstName: 'A',
+            lastName: 'B',
+            email: 'a@b.com',
+            password: 'hashed',
+            phone: '1',
+            billingAddress: 'direccion'
+        });
 
-  // =====================================================
-  // PRUEBA: Hook pre save
-  // =====================================================
-  // Este test verifica que la contraseña se cifre solo cuando cambia.
-  test('Debe cifrar la contraseña si fue modificada y omitirlo si no cambió', async () => {
+        // Ejecuta comparePassword()
+        const resultado = await cliente.comparePassword('candidate');
 
-    // -------------------------------------------------
-    // Configuración de mocks de bcrypt
-    // -------------------------------------------------
+        // Verifica que bcrypt.compare() fue llamado correctamente
+        expect(bcrypt.compare).toHaveBeenCalledWith(
+            'candidate',
+            'hashed'
+        );
 
-    // Simula generación de salt
-    bcrypt.genSalt.mockResolvedValue('salt');
-
-    // Simula hash de contraseña
-    bcrypt.hash.mockImplementation((password, salt) => {
-      return Promise.resolve(
-        'hashed-' + password + '-' + salt
-      );
+        // Verifica que la comparación devolvió true
+        expect(resultado).toBe(true);
     });
 
-    // Obtiene el schema del modelo
-    const schema = Customer.schema;
+    // =====================================================
+    // PRUEBA: Hook pre save
+    // =====================================================
+    // Este test verifica que la contraseña se cifre solo cuando cambia.
+    test('Debe cifrar la contraseña si fue modificada y omitirlo si no cambió', async () => {
 
-    // Obtiene las funciones pre save (usa preferentemente el middleware exportado)
-    let funcionesPreSave = [];
-    if (Customer.hashPasswordMiddleware) {
-      funcionesPreSave = [Customer.hashPasswordMiddleware];
-    } else {
-      funcionesPreSave = obtenerMiddlewareDePassword(schema);
-    }
+        // -------------------------------------------------
+        // Configuración de mocks de bcrypt
+        // -------------------------------------------------
 
-    // Verifica que existan hooks o el fallback
-    expect(funcionesPreSave.length).toBeGreaterThan(0);
+        // Simula generación de salt
+        bcrypt.genSalt.mockResolvedValue('salt');
 
-    // =================================================
-    // CASO 1:
-    // La contraseña fue modificada
-    // =================================================
+        // Simula hash de contraseña
+        bcrypt.hash.mockImplementation((password, salt) => {
+            return Promise.resolve(
+                'hashed-' + password + '-' + salt
+            );
+        });
 
-    // Documento simulado
-    const documento1 = {
+        // Obtiene el schema del modelo
+        const schema = Customer.schema;
 
-      // Simula que password fue modificada
-      isModified: (campo) => campo === 'password',
+        // Obtiene las funciones pre save (usa preferentemente el middleware exportado)
+        let funcionesPreSave = [];
+        if (Customer.hashPasswordMiddleware) {
+            funcionesPreSave = [Customer.hashPasswordMiddleware];
+        } else {
+            funcionesPreSave = obtenerMiddlewareDePassword(schema);
+        }
 
-      // Contraseña original
-      password: 'plain'
-    };
+        // Verifica que existan hooks o el fallback
+        expect(funcionesPreSave.length).toBeGreaterThan(0);
 
-    // Función next simulada
-    const next1 = jest.fn();
+        // =================================================
+        // CASO 1:
+        // La contraseña fue modificada
+        // =================================================
 
-    // Ejecuta todas las funciones pre save
-    for (const funcion of funcionesPreSave) {
+        // Documento simulado
+        const documento1 = {
 
-      const resultado = funcion.call(documento1, next1);
+            // Simula que password fue modificada
+            isModified: (campo) => campo === 'password',
 
-      // Espera promesas async
-      if (resultado && typeof resultado.then === 'function') {
-        await resultado;
-      }
-    }
+            // Contraseña original
+            password: 'plain'
+        };
 
-    // Verifica que genSalt() fue llamado
-    expect(bcrypt.genSalt).toHaveBeenCalled();
+        // Función next simulada
+        const next1 = jest.fn();
 
-    // Verifica que hash() fue llamado correctamente
-    expect(bcrypt.hash).toHaveBeenCalledWith(
-      'plain',
-      'salt'
-    );
+        // Ejecuta todas las funciones pre save
+        for (const funcion of funcionesPreSave) {
 
-    // Verifica que la contraseña fue cifrada
-    expect(documento1.password)
-      .toMatch(/^hashed-plain-salt/);
+            const resultado = funcion.call(documento1, next1);
 
-    // =================================================
-    // CASO 2:
-    // La contraseña NO fue modificada
-    // =================================================
+            // Espera promesas async
+            if (resultado && typeof resultado.then === 'function') {
+                await resultado;
+            }
+        }
 
-    const documento2 = {
+        // Verifica que genSalt() fue llamado
+        expect(bcrypt.genSalt).toHaveBeenCalled();
 
-      // Simula que ningún campo fue modificado
-      isModified: () => false,
+        // Verifica que hash() fue llamado correctamente
+        expect(bcrypt.hash).toHaveBeenCalledWith(
+            'plain',
+            'salt'
+        );
 
-      // Contraseña original
-      password: 'plain2'
-    };
+        // Verifica que la contraseña fue cifrada
+        expect(documento1.password)
+            .toMatch(/^hashed-plain-salt/);
 
-    // Mock de next()
-    const next2 = jest.fn();
+        // =================================================
+        // CASO 2:
+        // La contraseña NO fue modificada
+        // =================================================
 
-    // Ejecuta nuevamente hooks pre save
-    for (const funcion of funcionesPreSave) {
+        const documento2 = {
 
-      const resultado = funcion.call(documento2, next2);
+            // Simula que ningún campo fue modificado
+            isModified: () => false,
 
-      // Espera funciones async
-      if (resultado && typeof resultado.then === 'function') {
-        await resultado;
-      }
-    }
+            // Contraseña original
+            password: 'plain2'
+        };
 
-    // Verifica que next() fue llamado
-    expect(next2).toHaveBeenCalled();
+        // Mock de next()
+        const next2 = jest.fn();
 
-    // Verifica que NO se hizo hash de plain2
-    expect(bcrypt.hash)
-      .not.toHaveBeenCalledWith(
-        'plain2',
-        expect.anything()
-      );
-  });
+        // Ejecuta nuevamente hooks pre save
+        for (const funcion of funcionesPreSave) {
 
-  // Este test verifica que el hook avise si falla el cifrado.
-  test('Debe llamar next con error si falla el hash de la contraseña', async () => {
+            const resultado = funcion.call(documento2, next2);
 
-    bcrypt.genSalt.mockRejectedValue(new Error('hash failed'));
+            // Espera funciones async
+            if (resultado && typeof resultado.then === 'function') {
+                await resultado;
+            }
+        }
 
-    const schema = Customer.schema;
-    const funcionesPreSave = Customer.hashPasswordMiddleware
-      ? [Customer.hashPasswordMiddleware]
-      : obtenerMiddlewareDePassword(schema);
+        // Verifica que next() fue llamado
+        expect(next2).toHaveBeenCalled();
 
-    expect(funcionesPreSave.length).toBeGreaterThan(0);
+        // Verifica que NO se hizo hash de plain2
+        expect(bcrypt.hash)
+            .not.toHaveBeenCalledWith(
+                'plain2',
+                expect.anything()
+            );
+    });
 
-    const documento = {
-      isModified: (campo) => campo === 'password',
-      password: 'plain'
-    };
+    // Este test verifica que el hook avise si falla el cifrado.
+    test('Debe llamar next con error si falla el hash de la contraseña', async () => {
 
-    const next = jest.fn();
+        bcrypt.genSalt.mockRejectedValue(new Error('hash failed'));
 
-    for (const funcion of funcionesPreSave) {
-      const resultado = funcion.call(documento, next);
+        const schema = Customer.schema;
+        const funcionesPreSave = Customer.hashPasswordMiddleware
+            ? [Customer.hashPasswordMiddleware]
+            : obtenerMiddlewareDePassword(schema);
 
-      if (resultado && typeof resultado.then === 'function') {
-        await resultado;
-      }
-    }
+        expect(funcionesPreSave.length).toBeGreaterThan(0);
 
-    expect(next).toHaveBeenCalledWith(expect.any(Error));
-    expect(documento.password).toBe('plain');
-  });
+        const documento = {
+            isModified: (campo) => campo === 'password',
+            password: 'plain'
+        };
+
+        const next = jest.fn();
+
+        for (const funcion of funcionesPreSave) {
+            const resultado = funcion.call(documento, next);
+
+            if (resultado && typeof resultado.then === 'function') {
+                await resultado;
+            }
+        }
+
+        expect(next).toHaveBeenCalledWith(expect.any(Error));
+        expect(documento.password).toBe('plain');
+    });
 
 });
