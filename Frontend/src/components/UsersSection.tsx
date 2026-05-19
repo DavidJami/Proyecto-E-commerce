@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { customerAPI } from "@/lib/api";
@@ -34,7 +34,7 @@ export default function UsersSection() {
   });
   const { toast } = useToast();
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const data = await customerAPI.getAll() as any[];
       setUsers(
@@ -53,11 +53,11 @@ export default function UsersSection() {
     } catch (error) {
       toast({ title: "Error al obtener usuarios", variant: "destructive" });
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
