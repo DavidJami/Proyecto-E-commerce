@@ -193,4 +193,36 @@ describe('Pruebas unitarias de productService', () => {
     expect(resultado.totalPrice).toBe(20);
   });
 
+    // =====================================================
+    // PRUEBA: Productos disponibles, getById, update y delete
+    // =====================================================
+    test('Debe retornar productos disponibles y operaciones CRUD', async () => {
+      // getAvailableProducts
+      Product.find = jest.fn().mockResolvedValue([{ idProduct: 'a', stock: 2 }]);
+      const disponibles = await productService.getAvailableProducts();
+      expect(Product.find).toHaveBeenCalledWith({ stock: { $gt: 0 } });
+      expect(disponibles.length).toBeGreaterThan(0);
+
+      // getProductById success
+      const mockProd = { _id: '1', name: 'P1' };
+      Product.findById = jest.fn().mockResolvedValue(mockProd);
+      const encontrado = await productService.getProductById('1');
+      expect(Product.findById).toHaveBeenCalledWith('1');
+      expect(encontrado).toEqual(mockProd);
+
+      // updateProduct success
+      const updated = { _id: '1', name: 'P1 updated' };
+      Product.findByIdAndUpdate = jest.fn().mockResolvedValue(updated);
+      const resUpdate = await productService.updateProduct('1', { name: 'P1 updated' });
+      expect(Product.findByIdAndUpdate).toHaveBeenCalledWith('1', { name: 'P1 updated' }, { new: true });
+      expect(resUpdate).toEqual(updated);
+
+      // deleteProduct success
+      const deleted = { _id: '1' };
+      Product.findByIdAndDelete = jest.fn().mockResolvedValue(deleted);
+      const resDel = await productService.deleteProduct('1');
+      expect(Product.findByIdAndDelete).toHaveBeenCalledWith('1');
+      expect(resDel).toEqual(deleted);
+    });
+
 });

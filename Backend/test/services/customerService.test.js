@@ -1,16 +1,7 @@
-// Simula el modelo Customer para no usar la base de datos real
 jest.mock('../../models/customer');
-
-// Importa el modelo Customer
 const Customer = require('../../models/customer');
-
-// Importa el servicio que vamos a probar
 const customerService = require('../../services/customerService');
-
-// Grupo de pruebas del servicio customerService
 describe('Pruebas unitarias de customerService', () => {
-
-  // Antes de cada prueba limpia todos los mocks
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -37,9 +28,7 @@ describe('Pruebas unitarias de customerService', () => {
     ]);
   });
 
-  // =====================================================
-  // PRUEBA: Buscar cliente por ID inexistente
-  // =====================================================
+  
   test('Debe lanzar error si el cliente no existe al buscar por ID', async () => {
 
     // Simula que no se encontró ningún cliente
@@ -104,6 +93,30 @@ describe('Pruebas unitarias de customerService', () => {
     await expect(
       customerService.remove('1')
     ).rejects.toThrow('Customer not found');
+  });
+
+  // =====================================================
+  // CASOS EXITOSOS: findById, update y remove
+  // =====================================================
+  test('findById debe retornar cliente cuando existe', async () => {
+    Customer.findById = jest.fn().mockResolvedValue({ _id: '2', name: 'Existe' });
+    const res = await customerService.findById('2');
+    expect(Customer.findById).toHaveBeenCalledWith('2');
+    expect(res.name).toBe('Existe');
+  });
+
+  test('update debe retornar objeto actualizado cuando existe', async () => {
+    Customer.findByIdAndUpdate = jest.fn().mockResolvedValue({ _id: '3', name: 'Updated' });
+    const res = await customerService.update('3', { name: 'Updated' });
+    expect(Customer.findByIdAndUpdate).toHaveBeenCalledWith('3', { name: 'Updated' }, { new: true });
+    expect(res.name).toBe('Updated');
+  });
+
+  test('remove debe retornar eliminado cuando existe', async () => {
+    Customer.findByIdAndDelete = jest.fn().mockResolvedValue({ _id: '4' });
+    const res = await customerService.remove('4');
+    expect(Customer.findByIdAndDelete).toHaveBeenCalledWith('4');
+    expect(res._id).toBe('4');
   });
 
 });
