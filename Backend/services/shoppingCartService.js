@@ -1,4 +1,18 @@
+const mongoose = require('mongoose');
 const ShoppingCart = require('../models/shoppingCart');
+
+function buildCartLookup(id) {
+    const numericId = Number(id);
+    if (Number.isFinite(numericId) && String(numericId) === String(id).trim()) {
+        return { idShoppingCart: numericId };
+    }
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+        return { _id: id };
+    }
+
+    return null;
+}
 
 exports.createShoppingCart = async (data) => {
     const cart = new ShoppingCart(data);
@@ -10,15 +24,30 @@ exports.getAllShoppingCarts = async () => {
 };
 
 exports.getShoppingCartById = async (id) => {
-    return await ShoppingCart.findOne({ idShoppingCart: id });
+    const filter = buildCartLookup(id);
+    if (!filter) {
+        return null;
+    }
+
+    return await ShoppingCart.findOne(filter);
 };
 
 exports.updateShoppingCart = async (id, data) => {
-    return await ShoppingCart.findOneAndUpdate({ idShoppingCart: id }, data, { new: true });
+    const filter = buildCartLookup(id);
+    if (!filter) {
+        return null;
+    }
+
+    return await ShoppingCart.findOneAndUpdate(filter, data, { new: true });
 };
 
 exports.deleteShoppingCart = async (id) => {
-    return await ShoppingCart.findOneAndDelete({ idShoppingCart: id });
+    const filter = buildCartLookup(id);
+    if (!filter) {
+        return null;
+    }
+
+    return await ShoppingCart.findOneAndDelete(filter);
 };
 
 exports.getShoppingCartByCustomer = async (customerId) => {
