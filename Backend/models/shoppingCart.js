@@ -28,7 +28,10 @@ const shoppingCartSchema = new mongoose.Schema({
 // Apply auto-increment only outside of the test environment to avoid
 // conflicts when tests mock or stub the model/schema.
 if (process.env.NODE_ENV !== 'test') {
-    shoppingCartSchema.plugin(AutoIncrement, { incField: 'idShoppingCart' });
+    shoppingCartSchema.plugin(AutoIncrement, {
+        id: 'shoppingCart_id',
+        'inc_field': 'idShoppingCart'
+    });
 }
 
 module.exports = mongoose.model('ShoppingCart', shoppingCartSchema);
