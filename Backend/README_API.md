@@ -191,4 +191,26 @@ Notas y recomendaciones
 - Asegúrate que MongoDB está accesible y la colección exista o el backend podrá crear documentos al insertar.
 - Para pruebas rápidas puedes usar `localhost` y los valores del ejemplo.
 
-¿Quieres que genere una colección de Postman (archivo JSON) con estas peticiones ya configuradas? Puedo crearla y añadirla al repositorio si quieres.
+Seguridad y `JWT_SECRET`
+
+- Para producción debes definir `JWT_SECRET` en `Backend/.env` con una cadena larga y segura. El servidor actualmente usa un valor de fallback para desarrollo, pero en entornos reales debes proporcionar `JWT_SECRET` y no usar el fallback.
+
+- Ejemplo (añadir a `Backend/.env`):
+
+```
+JWT_SECRET=una_clave_larga_y_segura_que_nadie_comparta
+```
+
+Colección Postman
+
+- He añadido `Backend/postman_collection.json` con las peticiones principales. Pasos para usarla:
+  1. En Postman: Import → seleccionar `Backend/postman_collection.json`.
+  2. Ejecuta `Auth → Login - obtener JWT` (body por defecto `{ "username":"admin","password":"1234" }`).
+  3. Copia el valor `token` de la respuesta y pégalo en la variable de la colección `token` (Manage Environments → selecciona la colección → editar variable `token`) o pega el token en Authorization → Bearer Token.
+
+Notas finales
+
+- No compartas `JWT_SECRET`, `BASIC_PASS` ni otros secretos en repositorios públicos.
+- Si quieres, puedo generar también un archivo de entorno de Postman (`.postman_environment.json`) para facilitar la importación automática.
+
+¿Quieres que lo añada al repo para que puedas importarlo directamente?
