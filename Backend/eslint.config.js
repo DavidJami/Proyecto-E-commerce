@@ -144,7 +144,7 @@ module.exports = [
             'keyword-spacing': [
                 'error',
                 {
-                    before: true,
+                    before: true,               
                     after: true,
                 },
             ],

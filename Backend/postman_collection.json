@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "Proyecto E-commerce API",
+    "_postman_id": "a1e2b3c4-d5f6-7890-abcd-ef0123456789",
+    "description": "Colección para probar las APIs del backend (usar {{baseUrl}} y pegar el token en {{token}}).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - obtener JWT",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"admin\", \"password\": \"1234\" }"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth","login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        { "name": "GET all products", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/products", "host": ["{{baseUrl}}"], "path": ["barroco","products"] } } },
+        { "name": "GET available", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/productsAvailable", "host": ["{{baseUrl}}"], "path": ["barroco","productsAvailable"] } } },
+        { "name": "GET discounted", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/productsDiscounted", "host": ["{{baseUrl}}"], "path": ["barroco","productsDiscounted"] } } },
+        { "name": "GET product by id", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/products/:id", "host": ["{{baseUrl}}"], "path": ["barroco","products",":id"] } } },
+        { "name": "Create product", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{\n  \"idProduct\": \"p123\",\n  \"name\": \"Guitarra acústica\",\n  \"description\": \"Guitarra de cedro\",\n  \"price\": 1200,\n  \"stock\": 5,\n  \"category\": null,\n  \"custom\": false,\n  \"url\": \"https://ejemplo.com/guitarra.jpg\"\n}" }, "url": { "raw": "{{baseUrl}}/barroco/products", "host": ["{{baseUrl}}"], "path": ["barroco","products"] } } },
+        { "name": "Update product", "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"price\": 999 }" }, "url": { "raw": "{{baseUrl}}/barroco/products/:id", "host": ["{{baseUrl}}"], "path": ["barroco","products",":id"] } } },
+        { "name": "Delete product", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/products/:id", "host": ["{{baseUrl}}"], "path": ["barroco","products",":id"] } } },
+        { "name": "Purchase product", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"quantity\": 2 }" }, "url": { "raw": "{{baseUrl}}/barroco/products/:idProduct/purchase", "host": ["{{baseUrl}}"], "path": ["barroco","products",":idProduct","purchase"] } } }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "GET categories", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/categories", "host": ["{{baseUrl}}"], "path": ["barroco","categories"] } } },
+        { "name": "Create category", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"categoryID\": 10, \"name\": \"Instrumentos\", \"description\": \"Instrumentos musicales\" }" }, "url": { "raw": "{{baseUrl}}/barroco/categories", "host": ["{{baseUrl}}"], "path": ["barroco","categories"] } } }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        { "name": "GET customers", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/customers", "host": ["{{baseUrl}}"], "path": ["barroco","customers"] } } },
+        { "name": "Check admin", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/customers/check-admin", "host": ["{{baseUrl}}"], "path": ["barroco","customers","check-admin"] } } },
+        { "name": "Create customer", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"firstName\": \"Ana\", \"lastName\": \"Lopez\", \"email\": \"ana@ejemplo.com\", \"password\": \"12345\", \"phone\": \"999\", \"billingAddress\": \"C/1\" }" }, "url": { "raw": "{{baseUrl}}/barroco/customers", "host": ["{{baseUrl}}"], "path": ["barroco","customers"] } } },
+        { "name": "Update role", "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"email\": \"usuario@ejemplo.com\", \"role\": \"admin\" }" }, "url": { "raw": "{{baseUrl}}/barroco/customers/update-role", "host": ["{{baseUrl}}"], "path": ["barroco","customers","update-role"] } } }
+      ]
+    },
+    {
+      "name": "ShoppingCart",
+      "item": [
+        { "name": "Create cart", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "body": { "mode": "raw", "raw": "{ \"customer\": \"juan@example.com\", \"products\": [{ \"idProduct\": \"p123\", \"quantity\": 2, \"price\": 1200 }], \"total\": 2400 }" }, "url": { "raw": "{{baseUrl}}/barroco/shoppingCart", "host": ["{{baseUrl}}"], "path": ["barroco","shoppingCart"] } } },
+        { "name": "GET carts", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/shoppingCart", "host": ["{{baseUrl}}"], "path": ["barroco","shoppingCart"] } } },
+        { "name": "GET cart by customer", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/barroco/shoppingCart/customer/:customerId", "host": ["{{baseUrl}}"], "path": ["barroco","shoppingCart","customer",":customerId"] } } }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,9 @@ connectDB();
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Expose auth route before protecting other routes so clients can obtain a token
+app.use('/auth', require('./routes/authRoutes'));
+
 app.use(basicAuth);
 
 app.use('/barroco/products', require('./routes/productRoutes'));
