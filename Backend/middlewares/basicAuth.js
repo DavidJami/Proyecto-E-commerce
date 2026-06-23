@@ -1,9 +1,32 @@
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 const basicAuth = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
+        res.setHeader('WWW-Authenticate', 'Basic realm="Restricted Area"');
+        return res.status(401).send('Authentication required.');
+    }
+
+    // Bearer token support (JWT)
+    if (authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            return res.status(500).send('JWT secret not configured');
+        }
+        try {
+            const payload = jwt.verify(token, secret);
+            req.user = payload;
+            return next();
+        } catch (err) {
+            return res.status(401).send('Invalid token.');
+        }
+    }
+
+    // Fallback: Basic auth (existing behavior)
+    if (!authHeader.startsWith('Basic ')) {
         res.setHeader('WWW-Authenticate', 'Basic realm="Restricted Area"');
         return res.status(401).send('Authentication required.');
     }
@@ -14,9 +37,6 @@ const basicAuth = (req, res, next) => {
 
     const ADMIN_USER = process.env.BASIC_USER;
     const ADMIN_PASS = process.env.BASIC_PASS;
-
-    //console.log('BASIC_USER:', ADMIN_USER, 'BASIC_PASS:', ADMIN_PASS);
-    //console.log('Credenciales recibidas:', username, password);
 
     if (username === ADMIN_USER && password === ADMIN_PASS) {
         next();
