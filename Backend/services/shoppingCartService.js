@@ -10,7 +10,6 @@ function buildCartLookup(id) {
     if (mongoose.Types.ObjectId.isValid(id)) {
         return { _id: id };
     }
-
     return null;
 }
 

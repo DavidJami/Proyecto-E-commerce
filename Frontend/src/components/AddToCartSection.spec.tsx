@@ -1,3 +1,8 @@
+/**
+ * Pruebas para `AddToCartSection`.
+ * Qué prueba: verifica que el componente renderice productos obtenidos desde la API
+ * y que el botón "Agregar al carrito" invoque la llamada a la API de carrito.
+ */
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -11,6 +16,7 @@ vi.mock('@/hooks/use-toast', () => ({
 describe('AddToCartSection', () => {
   afterEach(() => vi.restoreAllMocks())
 
+  // Caso: muestra productos desde productAPI y al pulsar el botón llama a cartAPI.create
   it('renderiza y permite agregar al carrito', async () => {
     vi.spyOn(productAPI, 'getAll').mockResolvedValueOnce([
       { id: 'p1', name: 'Producto 1', price: 20 },
